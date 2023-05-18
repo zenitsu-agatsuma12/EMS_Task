@@ -1,16 +1,50 @@
 using EMSAPI.CustomMiddleware;
 using EMSAPI.Data;
 using EMSAPI.Model;
+using EMSAPI.Repository.SQL;
+using EMSAPI.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using EMSAPI.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAutoMapper(typeof(AutomapperConfig));
 
 builder.Services.AddDbContext<EMSDBContext>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<EMSDBContext>();
+
+builder.Services.AddScoped<IAccountDBRepository, AccountDBRepository>();
+
+var issuer = builder.Configuration["JWT:Issuer"];
+var audience = builder.Configuration["JWT:Audience"];
+var key = builder.Configuration["JWT:Key"];
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = issuer,
+        ValidAudience = audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+    };
+});
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -19,6 +53,17 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(opt =>
 {
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "EMSAPI", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+
     opt.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -57,6 +102,8 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
+
+
 
 var app = builder.Build();
 
