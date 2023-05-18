@@ -1,4 +1,5 @@
 ﻿using EMSWebApp.Models;
+using EMSWebApp.ViewModel;
 using Microsoft.VisualBasic;
 
 namespace EMSWebApp.Repositories
@@ -6,13 +7,13 @@ namespace EMSWebApp.Repositories
     public interface IEmployeeRepository
     {
         // get
-        Task<List<Employee>> GetEmployees();
+        List<Employee> GetEmployees();
 
         // get by id
         Employee GetEmployeeById(int id);
 
         // add 
-        Task<Employee?> AddEmployees(Employee newEmployee);
+        EmployeeViewModel AddEmployees(EmployeeViewModel newEmployee);
 
         // update 
         Employee UpdateEmployee(int id, Employee newEmployee);

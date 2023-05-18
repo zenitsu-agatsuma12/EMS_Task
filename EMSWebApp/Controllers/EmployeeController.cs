@@ -1,5 +1,6 @@
 ﻿using EMSWebApp.Models;
 using EMSWebApp.Repositories;
+using EMSWebApp.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 
@@ -14,9 +15,9 @@ namespace EMSWebApp.Controllers
             this._repo = repo;
         }
         // Get All
-        public async Task<IActionResult> GetEmployees()
+        public IActionResult GetEmployees()
         {
-            var employees = await _repo.GetEmployees();
+            var employees = _repo.GetEmployees();
             return View(employees);
         }
 
@@ -28,7 +29,7 @@ namespace EMSWebApp.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Employee newEmployee)
+        public IActionResult Create(EmployeeViewModel newEmployee)
         {
             if (ModelState.IsValid)
             {
