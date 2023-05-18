@@ -17,6 +17,7 @@ namespace EMSWebApp.Repositories.Api
         }
         public EmployeeViewModel AddEmployees(EmployeeViewModel newEmployee)
         {
+            
             /* var newTodoAsString = JsonConvert.SerializeObject(newEmployee);
             var requestBody = new StringContent(newTodoAsString, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("/Employee", requestBody);

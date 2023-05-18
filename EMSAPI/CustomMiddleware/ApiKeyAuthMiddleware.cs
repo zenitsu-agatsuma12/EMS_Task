@@ -8,9 +8,7 @@
         public ApiKeyAuthMiddleware(RequestDelegate next)
         {
             _next = next;
-        }
-
-        // context container request response pipeline objects 
+        } 
         public async Task Invoke(HttpContext context)
         {
             if (!context.Request.Headers.TryGetValue(ApiKey, out var extractedKey))
