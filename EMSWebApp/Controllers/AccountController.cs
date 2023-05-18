@@ -54,7 +54,7 @@ namespace EMSWebApp.Controllers
                     // add token to session 
                     HttpContext.Session.SetString("JWToken", result);
 
-                    return RedirectToAction("GetAllContacts", "Contact");
+                    return RedirectToAction("GetEmployees", "Employee");
                 }
                 ModelState.AddModelError(string.Empty, "Invalid Login Credentials");
             }

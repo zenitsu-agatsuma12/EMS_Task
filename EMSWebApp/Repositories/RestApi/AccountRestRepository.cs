@@ -18,7 +18,7 @@ namespace EMSWebApp.Repositories.RestApi
             _httpClient = new HttpClient(httpClientHandler);
 
             _configs = configs;
-            _httpClient.BaseAddress = new Uri("https://localhost:5176");
+            _httpClient.BaseAddress = new Uri("http://localhost:5176");
         }
 
         public Task<string> GetApplicationUserId(string token)

@@ -7,13 +7,13 @@ namespace EMSWebApp.Repositories
     public interface IEmployeeRepository
     {
         // get
-        List<Employee> GetEmployees();
+        List<Employee> GetEmployees(string token);
 
         // get by id
         Employee GetEmployeeById(int id);
 
         // add 
-        EmployeeViewModel AddEmployees(EmployeeViewModel newEmployee);
+        EmployeeViewModel AddEmployees(EmployeeViewModel newEmployee, string token);
 
         // update 
         Employee UpdateEmployee(int Id, Employee newEmployee);

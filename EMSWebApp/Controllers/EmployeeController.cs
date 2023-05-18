@@ -17,8 +17,17 @@ namespace EMSWebApp.Controllers
         // Get All
         public IActionResult GetEmployees()
         {
-            var employees = _repo.GetEmployees();
-            return View(employees);
+            string token = HttpContext.Session.GetString("JWToken");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                // Handle the case when the token is not available
+                return RedirectToAction("Login", "Account");
+            }
+
+            var contacts =  _repo.GetEmployees(token);
+
+            return View(contacts);
         }
 
         // Create
@@ -33,7 +42,8 @@ namespace EMSWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var info = _repo.AddEmployees(newEmployee);
+                var token = HttpContext.Session.GetString("JWToken");
+                var info = _repo.AddEmployees(newEmployee, token);
                 return RedirectToAction("GetEmployees");
             }
             ViewData["Message"] = "Data is not valid to create the Employees";
