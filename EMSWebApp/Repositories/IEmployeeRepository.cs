@@ -10,7 +10,7 @@ namespace EMSWebApp.Repositories
         List<Employee> GetEmployees(string token);
 
         // get by id
-        Employee GetEmployeeById(int id);
+        Employee GetEmployeeById(int id, string token);
 
         // add 
         EmployeeViewModel AddEmployees(EmployeeViewModel newEmployee, string token);

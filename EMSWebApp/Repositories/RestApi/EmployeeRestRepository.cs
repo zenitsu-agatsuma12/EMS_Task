@@ -2,6 +2,7 @@
 using EMSWebApp.ViewModel;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NuGet.Common;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -61,9 +62,25 @@ namespace EMSWebApp.Repositories.Api
             throw new NotImplementedException();
         }
 
-        public Employee GetEmployeeById(int id)
+        public Employee GetEmployeeById(int id, string token)
         {
-            throw new NotImplementedException();
+            _httpClient.DefaultRequestHeaders.Add("ApiKey", _configs.GetValue<string>("ApiKey"));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token); // Assuming 'token' is defined
+
+            string fullURL = $"{_baseURL}/Employee/{id}";
+
+            var response = _httpClient.GetAsync(fullURL).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = response.Content.ReadAsStringAsync().Result;
+                var employee = JsonConvert.DeserializeObject<Employee>(responseData);
+                return employee;
+            }
+            else
+            {
+                // Handle unsuccessful response here
+                return null;
+            }
         }
 
         public List<Employee> GetEmployees(string token)

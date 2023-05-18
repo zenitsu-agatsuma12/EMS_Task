@@ -67,12 +67,14 @@ namespace EMSWebApp.Controllers
 
         public IActionResult Details(int id)
         {
-            var employee = _repo.GetEmployeeById(id);
-            if (employee != null)
-            {
-                return View(employee);
-            }
-            return View("Error");
+
+            var token = HttpContext.Session.GetString("JWToken");
+            var emp = _repo.GetEmployeeById(id, token);
+
+            if (emp is null)
+                return NotFound();
+
+            return View(emp);
         }
 
         public IActionResult Delete(int id)
