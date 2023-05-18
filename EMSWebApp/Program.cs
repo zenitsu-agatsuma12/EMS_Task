@@ -1,9 +1,11 @@
 using EMSWebApp.Repositories;
 using EMSWebApp.Repositories.Api;
+using EMSWebApp.Repositories.RestApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IAccountRepository, AccountRestRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRestRepository>();
 builder.Services.AddControllersWithViews();
 
