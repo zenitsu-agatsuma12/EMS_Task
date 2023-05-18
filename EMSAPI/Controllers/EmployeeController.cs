@@ -44,11 +44,11 @@ namespace EMSAPI.Controllers
         // Update
 
         [HttpPut]
-        public async Task<IActionResult> UpdateEmployee(int EmployeeId, string First_Name, string Last_Name, string Middle_Name, string Address, string DOB)
+        public async Task<IActionResult> UpdateEmployee(int Id, string First_Name, string Last_Name, string Middle_Name, string Address, string DOB)
         {
             var parameters = new[]
             {
-                new SqlParameter("@EmployeeId", EmployeeId),
+                new SqlParameter("@EmployeeId", Id),
                 new SqlParameter("@First_Name", First_Name),
                 new SqlParameter("@Last_Name", Last_Name),
                 new SqlParameter("@Middle_Name", Middle_Name),

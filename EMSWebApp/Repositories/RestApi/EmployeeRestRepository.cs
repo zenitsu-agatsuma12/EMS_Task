@@ -47,7 +47,7 @@ namespace EMSWebApp.Repositories.Api
             var response = httpClient.PostAsync(fullURL, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                /* var responseContent = response.Content.ReadAsStringAsync().Result;
+                 /* var responseContent = response.Content.ReadAsStringAsync().Result;
                  EmployeeViewModel employee = JsonConvert.DeserializeObject<EmployeeViewModel>(responseContent);
                  return employee; */
             }
@@ -57,13 +57,33 @@ namespace EMSWebApp.Repositories.Api
 
         public Employee DeleteEmployee(int id)
         {
-            throw new NotImplementedException();
+            var response = httpClient.DeleteAsync($"{baseURL}/Employee/{id}").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+                var deletedEmployee = JsonConvert.DeserializeObject<Employee>(data);
+                return deletedEmployee;
+            }
+
+            return null;
         }
+
 
         public Employee GetEmployeeById(int id)
         {
-            throw new NotImplementedException();
+            var url = $"{baseURL}/Employee/{id}";
+
+            var response = httpClient.GetAsync(url).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+                var employee = JsonConvert.DeserializeObject<Employee>(data);
+                return employee;
+            }
+
+            return null;
         }
+
 
         public List<Employee> GetEmployees()
         {
@@ -80,7 +100,20 @@ namespace EMSWebApp.Repositories.Api
 
         public Employee UpdateEmployee(int id, Employee newEmployee)
         {
-            throw new NotImplementedException();
+            var url = $"{baseURL}/Employee?Id={id}&First_Name={newEmployee.First_Name}&Last_Name={newEmployee.Last_Name}&Middle_Name={newEmployee.Middle_Name}&Address={newEmployee.Address}&DOB={newEmployee.DOB}";
+
+            var response = httpClient.PutAsync(url, null).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var data = response.Content.ReadAsStringAsync().Result;
+                var updatedEmployee = JsonConvert.DeserializeObject<Employee>(data);
+                return updatedEmployee;
+            }
+
+            return null;
         }
+
+
+
     }
 }
