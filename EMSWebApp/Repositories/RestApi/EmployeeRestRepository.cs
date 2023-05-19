@@ -4,6 +4,7 @@ using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NuGet.Common;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -56,10 +57,17 @@ namespace EMSWebApp.Repositories.Api
             return null;
         }
 
-
-        public Employee DeleteEmployee(int id)
+        public async Task DeleteEmployee(int id, string token)
         {
-            throw new NotImplementedException();
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Add("ApiKey", _configs.GetValue<string>("ApiKey"));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.DeleteAsync(_baseURL + "/Employee/?Id=" + id);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Failed to delete selected employee. Error: " + response.StatusCode);
+            }
         }
 
         public Employee GetEmployeeById(int id, string token)
@@ -78,7 +86,6 @@ namespace EMSWebApp.Repositories.Api
             }
             else
             {
-                // Handle unsuccessful response here
                 return null;
             }
         }
@@ -103,9 +110,25 @@ namespace EMSWebApp.Repositories.Api
             }
         }
 
-        public Employee UpdateEmployee(int Id, Employee newEmployee)
+        public async Task<Employee> UpdateEmployee(int id, Employee newEmployee, string token)
         {
-            throw new NotImplementedException();
+            _httpClient.DefaultRequestHeaders.Add("ApiKey", _configs.GetValue<string>("ApiKey"));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            string data = JsonConvert.SerializeObject(newEmployee);
+            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            //http://localhost:5176/api/Employee?Id=1&First_Name=weewwew&Last_Name=ewew&Middle_Name=wewewew&Address=wewewew&DOB=wewewew
+            string fullURL = _baseURL + "/Employee/?Id=" + newEmployee.Id + "&First_Name=" + newEmployee.First_Name + "&Last_Name=" + newEmployee.Last_Name + "&Middle_Name=" + newEmployee.Middle_Name + "&Address=" + newEmployee.Address + "&DOB=" + newEmployee.DOB;
+            var response = await _httpClient.PutAsync(fullURL, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return newEmployee;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /*

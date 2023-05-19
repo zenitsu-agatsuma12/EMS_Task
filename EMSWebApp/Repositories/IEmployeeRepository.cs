@@ -16,9 +16,9 @@ namespace EMSWebApp.Repositories
         EmployeeViewModel AddEmployees(EmployeeViewModel newEmployee, string token);
 
         // update 
-        Employee UpdateEmployee(int Id, Employee newEmployee);
+        Task<Employee> UpdateEmployee(int id, Employee newEmployee, string token);
 
         // delete 
-        Employee DeleteEmployee(int id);
+        Task DeleteEmployee(int id, string token);
     }
 }

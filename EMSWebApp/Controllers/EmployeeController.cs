@@ -52,15 +52,46 @@ namespace EMSWebApp.Controllers
 
         // Update
 
-        [HttpPut]
-        public IActionResult Update(int id, Employee newEmployee)
+        [HttpGet]
+        public IActionResult Update(int id)
         {
-            var updatedEmployee = _repo.UpdateEmployee(id, newEmployee);
-            if (updatedEmployee != null)
+            var token = HttpContext.Session.GetString("JWToken");
+            var wishlist = _repo.GetEmployeeById(id, token);
+            if (wishlist == null)
+                return NotFound();
+
+            return View(wishlist);
+        }
+        [HttpPost]
+        public IActionResult Update(int id, Employee updatedEmployee)
+        {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (id != updatedEmployee.Id)
+                return NotFound();
+
+            if (ModelState.IsValid)
             {
-                return View("Success", updatedEmployee);
+                var getEmp = _repo.UpdateEmployee(id, updatedEmployee, token);
+                if (getEmp != null)
+                {
+                    if (getEmp.IsCompleted)
+                    {
+                        return RedirectToAction("GetEmployees", new { id = getEmp.Id, token });
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = "Failed to update the selected employee";
+                        return View(updatedEmployee);
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Failed to update the selected employee";
+                    return View(updatedEmployee);
+                }
             }
-            return View("Error");
+
+            return View(updatedEmployee);
         }
 
         // Get by ID
@@ -79,12 +110,9 @@ namespace EMSWebApp.Controllers
 
         public IActionResult Delete(int id)
         {
-            var deletedEmployee = _repo.DeleteEmployee(id);
-            if (deletedEmployee != null)
-            {
-                return View(deletedEmployee);
-            }
-            return View("Error");
+            var token = HttpContext.Session.GetString("JWToken");
+            _repo.DeleteEmployee(id, token);
+            return RedirectToAction("GetEmployees");
         }
 
     }
