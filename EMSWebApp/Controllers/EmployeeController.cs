@@ -63,7 +63,7 @@ namespace EMSWebApp.Controllers
             return View(wishlist);
         }
         [HttpPost]
-        public IActionResult Update(int id, Employee updatedEmployee)
+        public async Task<IActionResult> Update(int id, Employee updatedEmployee)
         {
             var token = HttpContext.Session.GetString("JWToken");
             if (id != updatedEmployee.Id)
@@ -71,12 +71,12 @@ namespace EMSWebApp.Controllers
 
             if (ModelState.IsValid)
             {
-                var getEmp = _repo.UpdateEmployee(id, updatedEmployee, token);
+                var getEmp = await _repo.UpdateEmployee(id, updatedEmployee, token);
                 if (getEmp != null)
                 {
-                    if (getEmp.IsCompleted)
+                    if (getEmp.Id != null)
                     {
-                        return RedirectToAction("GetEmployees", new { id = getEmp.Id, token });
+                        return RedirectToAction(nameof(GetEmployees), new { id = getEmp.Id, token });
                     }
                     else
                     {

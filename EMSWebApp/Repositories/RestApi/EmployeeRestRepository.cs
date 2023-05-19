@@ -117,7 +117,9 @@ namespace EMSWebApp.Repositories.Api
 
             string data = JsonConvert.SerializeObject(newEmployee);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            
             //http://localhost:5176/api/Employee?Id=1&First_Name=weewwew&Last_Name=ewew&Middle_Name=wewewew&Address=wewewew&DOB=wewewew
+            
             string fullURL = _baseURL + "/Employee/?Id=" + newEmployee.Id + "&First_Name=" + newEmployee.First_Name + "&Last_Name=" + newEmployee.Last_Name + "&Middle_Name=" + newEmployee.Middle_Name + "&Address=" + newEmployee.Address + "&DOB=" + newEmployee.DOB;
             var response = await _httpClient.PutAsync(fullURL, content);
 
